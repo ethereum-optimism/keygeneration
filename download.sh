@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TODO: configurable
-### make this configurable
-OUTDIR=/run/media/tynes/B0E2-E6FB
 OUTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd )"
 
 USAGE="
@@ -38,10 +35,7 @@ while (( "$#" )); do
   esac
 done
 
-MAIN=https://packages.ubuntu.com/bionic/amd64
-MIRROR=https://mirrors.kernel.org/ubuntu/pool/main/b
 OUTFILE=dependencies.tar.gz
-
 BCRYPTO_TAG=v5.3.0
 BSERT_TAG=v0.0.10
 BUFIO_TAG=v1.0.7
@@ -76,6 +70,33 @@ function remove_v () {
 }
 
 download
+
+# get the node js version
+NODE_VERSION=v$(ls | grep node | grep -oP '([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})')
+
+get_release node-$NODE_VERSION-headers.tar.gz \
+    https://nodejs.org/download/release/$NODE_VERSION/node-$NODE_VERSION-headers.tar.gz
+
+# Compare the checksums
+wget https://nodejs.org/download/release/$NODE_VERSION/SHASUMS256.txt
+EXPECT=$(cat SHASUMS256.txt \
+    | grep node-$NODE_VERSION-headers.tar.gz \
+    | cut -d ' ' -f1 \
+    | tr -d '\n')
+GOT=$(shasum -a 256 node-$NODE_VERSION-headers.tar.gz \
+    | cut -d ' ' -f1 \
+    | tr -d '\n')
+
+if [[ "$GOT" != "$EXPECT" ]]; then
+    echo "Checksum doesn't match"
+    echo "Got:    $GOT"
+    echo "Expect: $EXPECT"
+    exit 1
+fi
+
+move node-$NODE_VERSION-headers.tar.gz
+move SHASUMS256.txt
+
 tar_deb
 
 get_release bcrypto_$BCRYPTO_TAG.tar.gz \
@@ -128,8 +149,16 @@ tar -xvf bufio_$BUFIO_TAG.tar.gz
 tar -xvf loady_$LOADY_TAG.tar.gz
 tar -xvf bmocha_$BMOCHA_TAG.tar.gz
 tar -xvf node-gyp_$NODE_GYP_TAG.tar.gz
+tar -xvf node-$NODE_VERSION-headers.tar.gz
 
 mkdir -p \$HOME/.node_modules
+
+# create the gyp nodedir, this makes an assumption
+# that it is running on a linux machine
+mkdir -p \$HOME/.cache/node-gyp/$(remove_v $NODE_VERSION)
+
+# TODO: make this more flexible, see gyp.package.installVersion
+echo 9 >> \$HOME/.cache/node-gyp/$(remove_v $NODE_VERSION)/installVersion
 
 cp -rf bcrypto-$(remove_v $BCRYPTO_TAG) \$HOME/.node_modules/bcrypto
 cp -rf bsert-$(remove_v $BSERT_TAG) \$HOME/.node_modules/bsert
@@ -137,10 +166,11 @@ cp -rf bufio-$(remove_v $BUFIO_TAG) \$HOME/.node_modules/bufio
 cp -rf loady-$(remove_v $LOADY_TAG) \$HOME/.node_modules/loady
 cp -rf bmocha-$(remove_v $BMOCHA_TAG) \$HOME/.node_modules/bmocha
 cp -rf node-gyp-$(remove_v $NODE_GYP_TAG) \$HOME/.node_modules/node-gyp
+cp -rf node-$NODE_VERSION/* \$HOME/.cache/node-gyp/$(remove_v $NODE_VERSION)
 
 (
     cd \$HOME/.node_modules/bcrypto
-    \$HOME/.node_modules/node-gyp/bin/node-gyp.js rebuild
+    \$HOME/.node_modules/node-gyp/bin/node-gyp.js rebuild --verbose
 )
 
 \$HOME/.node_modules/bmocha/bin/bmocha ./test/*.js
