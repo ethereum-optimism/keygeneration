@@ -158,7 +158,7 @@ mkdir -p \$HOME/.node_modules
 mkdir -p \$HOME/.cache/node-gyp/$(remove_v $NODE_VERSION)
 
 # TODO: make this more flexible, see gyp.package.installVersion
-echo 9 >> \$HOME/.cache/node-gyp/$(remove_v $NODE_VERSION)/installVersion
+echo 9 > \$HOME/.cache/node-gyp/$(remove_v $NODE_VERSION)/installVersion
 
 cp -rf bcrypto-$(remove_v $BCRYPTO_TAG) \$HOME/.node_modules/bcrypto
 cp -rf bsert-$(remove_v $BSERT_TAG) \$HOME/.node_modules/bsert
