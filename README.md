@@ -1,7 +1,12 @@
 # keygeneration
 
 Offline key generation. Generates a [bip 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
-compliant mnemonic. Useful for generating keys on an airgapped computer.
+compliant mnemonic. Useful for generating keys on an airgapped computer. This
+package will download and package all of the required dependencies for key
+generation on an Ubuntu 18.xx (Bionic Beaver) machine. These dependencies can
+be loaded onto an airgapped computer for key generation.
+
+Use this at your own risk as this comes with no guarantees.
 
 ## Local Dependencies
 
@@ -53,6 +58,8 @@ This will generate an `install.sh` script as well as a bunch
 of tarballs containing various dependencies for the keygen.
 
 On the airgapped computer, copy the files off of the USB stick.
+This computer must be running Ubuntu 18.xx and may be booted
+from a USB stick.
 Navigate to the directory full of the files and run the commands:
 
 ```bash
