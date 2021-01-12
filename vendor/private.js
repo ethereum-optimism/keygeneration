@@ -157,11 +157,6 @@ class HDPrivateKey extends bio.Struct {
     }
 
     const id = this.getID(index);
-    const cache = common.cache.get(id);
-
-    if (cache)
-      return cache;
-
     const bw = bio.pool(37);
 
     if (index & common.HARDENED) {
@@ -198,8 +193,6 @@ class HDPrivateKey extends bio.Struct {
     child.chainCode = right;
     child.privateKey = key;
     child.publicKey = secp256k1.publicKeyCreate(key, true);
-
-    common.cache.set(id, child);
 
     return child;
   }

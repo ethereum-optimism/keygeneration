@@ -1,0 +1,31 @@
+{
+  "name": "keygeneration",
+  "version": "0.1.0",
+  "description": "Offline key generation",
+  "main": "generate.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "bcrypto": "5.3.0",
+    "bsert": "0.0.10",
+    "bufio": "1.0.7"
+  },
+  "devDependencies": {
+    "bmocha": "^2.1.5"
+  },
+  "scripts": {
+    "test": "bmocha test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tynes/keygeneration.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tynes/keygeneration/issues"
+  },
+  "homepage": "https://github.com/tynes/keygeneration#readme"
+}
