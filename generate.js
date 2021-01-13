@@ -35,13 +35,9 @@ for (const path of paths) {
   const key = privkey.derivePath(path);
   console.log('Private Key:');
   console.log('0x' + key.privateKey.toString('hex'));
-  console.log('Public Key:')
-  const uncompressed = secp256k1.publicKeyConvert(key.publicKey, false)
+  console.log('Public Key:');
+  const uncompressed = secp256k1.publicKeyConvert(key.publicKey, true);
   console.log('0x' + uncompressed.toString('hex'));
-  const unprefixed = uncompressed.slice(1);
-  const address = keccak256.digest(unprefixed).slice(0, 20);
-  console.log('Address:')
-  console.log('0x' + address.toString('hex'));
   console.log();
 }
 
