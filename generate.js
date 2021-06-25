@@ -5,6 +5,7 @@ const HDPrivateKey = require('./vendor/private');
 const secp256k1 = require('bcrypto/lib/secp256k1');
 const keccak256 = require('bcrypto/lib/keccak256');
 const bcrypto = require('bcrypto');
+const {utils} = require('ethers')
 
 if (!bcrypto)
   throw new Error('Be sure to unpack and install bcrypto first');
@@ -22,12 +23,11 @@ console.log();
 const privkey = HDPrivateKey.fromMnemonic(mnemonic)
 
 const paths = [
-  `m/44'/60'/0'/0`,
-  `m/44'/60'/0'/1`,
-  `m/44'/60'/0'/2`,
   `m/44'/60'/0'/0/0`,
   `m/44'/60'/0'/0/1`,
   `m/44'/60'/0'/0/2`,
+  `m/44'/60'/0'/1`,
+  `m/44'/60'/0'/2`,
 ];
 
 for (const path of paths) {
@@ -38,6 +38,8 @@ for (const path of paths) {
   console.log('Public Key:');
   const uncompressed = secp256k1.publicKeyConvert(key.publicKey, true);
   console.log('0x' + uncompressed.toString('hex'));
+  console.log('Address:')
+  console.log(utils.computeAddress('0x' + uncompressed.toString('hex')))
   console.log();
 }
 

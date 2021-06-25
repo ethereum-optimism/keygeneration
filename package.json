@@ -9,7 +9,8 @@
   "dependencies": {
     "bcrypto": "5.3.0",
     "bsert": "0.0.10",
-    "bufio": "1.0.7"
+    "bufio": "1.0.7",
+    "ethers": "^5.1.4"
   },
   "devDependencies": {
     "bmocha": "^2.1.5"
